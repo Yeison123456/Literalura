@@ -25,7 +25,7 @@ public class Libro {
     @JsonAlias("title")
     private String title;
     @JsonAlias("download_count")
-    private Number download_count;
+    private Integer download_count;
     @JsonAlias("languages")
     private String languages;
 

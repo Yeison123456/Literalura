@@ -10,14 +10,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Service
-public class autorService {
+public class AutorService {
 
 
-@Autowired
-private AutorRepository autorRepository ;
+    @Autowired
+    private AutorRepository autorRepository;
 
 
-    public List<Autor> add(JSONArray obje){
+    public List<Autor> add(JSONArray obje) {
         System.out.println(obje);
         List<Autor> autores = new ArrayList<>();
         for (int i = 0; i < obje.length(); i++) {
@@ -27,23 +27,12 @@ private AutorRepository autorRepository ;
             autor.setBirth_year(jsonObject.getInt("birth_year"));
             autor.setDeath_year(jsonObject.getInt("death_year"));
             // Si tienes libros asociados, tendrás que añadir lógica adicional para manejarlos
-            if (!findByName(jsonObject.getString("name"))){
+            if (!autorRepository.existsByNameIgnoreCase(jsonObject.getString("name"))) {
                 autores.add(autor);
             }
         }
-        autorRepository.findAll();
+        autorRepository.saveAll(autores);
         return autores;
-    }
-
-    public Boolean findByName(String name){
-
-        if (autorRepository.findByName(name))
-        {
-            return  true;
-        }
-        return false;
-
-
     }
 
 

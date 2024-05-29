@@ -27,10 +27,10 @@ public class Autor {
     private String name;
 
 //    @JsonAlias("birth_year")
-    private Number birth_year;
+    private Integer birth_year;
 
  //   @JsonAlias("death_year")
-    private Number death_year;
+    private Integer death_year;
 
     @OneToMany(mappedBy = "autor", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private List<Libro> libros;

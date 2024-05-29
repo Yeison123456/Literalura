@@ -4,7 +4,6 @@ import com.challenge.literalura.Model.Libro;
 import org.json.JSONArray;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import com.challenge.literalura.Service.autorService;
 
 import java.io.IOException;
 import java.net.URI;
@@ -16,10 +15,10 @@ import java.util.List;
 import org.json.JSONObject;
 
 @Service
-public class libroService {
+public class LibroService {
 
     @Autowired
-    private autorService autorService1 = new autorService();
+    private AutorService autorService1 = new AutorService();
 
     public List<Libro> findAPI(String name) {
         String API_URL = "http://gutendex.com/books/";
@@ -48,7 +47,7 @@ public class libroService {
 
 
                     // Verificar si el título contiene el término de búsqueda (ignorando mayúsculas y minúsculas)
-                    if (title.toLowerCase().contains(name.toLowerCase())) {
+                    if (title.equalsIgnoreCase(name)) {
                         // Si encuentra una coincidencia, hacer un scream
                         System.out.println("¡Encontré una coincidencia en el título!");
 
@@ -60,8 +59,10 @@ public class libroService {
                                             "download_count: "+ resultObject.getLong("download_count")+ "\n");
 
                         autorService1.add(resultObject.getJSONArray("authors"));
+                        return Collections.emptyList();
                     }
                 }
+                System.out.println("No se encontro ningun libro con tal nombre");
             }
         } catch (IOException | InterruptedException e) {
             throw new RuntimeException("Error al procesar la solicitud HTTP", e);

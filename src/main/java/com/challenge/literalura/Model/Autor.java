@@ -15,7 +15,6 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Table(name = "Autor")
-@JsonIgnoreProperties(ignoreUnknown = true)
 public class Autor {
 
 
@@ -23,16 +22,27 @@ public class Autor {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
- //   @JsonAlias("name")
+
     private String name;
 
-//    @JsonAlias("birth_year")
+
     private Integer birth_year;
 
- //   @JsonAlias("death_year")
+
     private Integer death_year;
 
     @OneToMany(mappedBy = "autor", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private List<Libro> libros;
+
+    @Override
+    public String toString() {
+        return "Autor{" +
+                "id=" + id + ',' + '\n' +
+                "name='" + name + ',' + '\n' +
+                "birth_year=" + birth_year + ',' + '\n'  +
+                "death_year=" + death_year + ',' + '\n' +
+                '}';
+    }
+
 
 }

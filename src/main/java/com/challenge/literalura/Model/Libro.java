@@ -14,7 +14,6 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Table(name = "Libro")
-@JsonIgnoreProperties(ignoreUnknown = true)
 public class Libro {
 
     @JsonAlias("id")
@@ -22,16 +21,27 @@ public class Libro {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @JsonAlias("title")
+
     private String title;
-    @JsonAlias("download_count")
-    private Integer download_count;
-    @JsonAlias("languages")
+
+    private Long download_count;
+
     private String languages;
 
-    @JsonAlias("authors")
+
     @ManyToOne
     private Autor autor;
+
+    @Override
+    public String toString() {
+        return "Libro{\n" +
+                "\t" + "id=" + id + "\n" +
+                "\t" + "title='" + title + '\'' + "\n" +
+                "\t" + "download_count=" + download_count + "\n" +
+                "\t" + "languages='" + languages + '\'' + "\n" +
+                "\t" + "autor=" + autor.getName() + '\n';
+    }
+
 
 
 }

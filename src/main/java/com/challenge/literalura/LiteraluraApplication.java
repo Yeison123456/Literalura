@@ -1,5 +1,6 @@
 package com.challenge.literalura;
 
+import com.challenge.literalura.Service.AutorService;
 import com.challenge.literalura.Service.LibroService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
@@ -24,6 +25,7 @@ public class LiteraluraApplication {
 			int prueba = 1;
 
 			LibroService libroService = ctx.getBean(LibroService.class);
+			AutorService autorService = ctx.getBean(AutorService.class);
 
 			while (prueba==1) {
 				System.out.println("""
@@ -53,13 +55,16 @@ public class LiteraluraApplication {
 								libroService.findAPI(name);
 								break;
 							case 2:
-								// Lógica para listar libros registrados
+								libroService.findAll();
 								break;
 							case 3:
-								// Lógica para listar autores registrados
+								autorService.findAll();
 								break;
 							case 4:
 								System.out.println("Ingrese el año vivo de autor(es) que desea buscar:");
+								lectura.nextLine();
+								Float añoVivo = lectura.nextFloat();
+								autorService.findByAño(añoVivo);
 								break;
 							case 5:
 								System.out.println("""
@@ -69,6 +74,9 @@ public class LiteraluraApplication {
                                         fr- francés
                                         pt- portugués
                                         """);
+								lectura.nextLine();
+								String lenguaje = lectura.nextLine();
+								libroService.findByLenguage(lenguaje);
 								break;
 							default:
 								System.out.println("Opción no válida, por favor intente de nuevo.");
@@ -79,9 +87,13 @@ public class LiteraluraApplication {
 					System.out.println("Hubo un error: " + e.getMessage());
 				}
 
-				System.out.println("Quiere consultar algo mas? 1. Si  0. No");
-				lectura.nextLine();
-				prueba = lectura.nextInt();
+				try{
+					System.out.println("Quiere consultar algo mas? 1. Si  0. No");
+					prueba = lectura.nextInt();
+				} catch ( Exception e ) {
+					System.out.println("Entrada inválida. Por favor, ingrese 1 para continuar o 0 para salir.");
+					prueba = lectura.nextInt();
+				}
 			}
 			System.out.println("Termino el programa, Gracias por participar :D");
 		};

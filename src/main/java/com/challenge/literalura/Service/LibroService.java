@@ -1,6 +1,9 @@
 package com.challenge.literalura.Service;
 
+import com.challenge.literalura.Model.Autor;
 import com.challenge.literalura.Model.Libro;
+import com.challenge.literalura.Repository.AutorRepository;
+import com.challenge.literalura.Repository.libroRepository;
 import org.json.JSONArray;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -10,6 +13,7 @@ import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import org.json.JSONObject;
@@ -18,9 +22,12 @@ import org.json.JSONObject;
 public class LibroService {
 
     @Autowired
+    private libroRepository libroRepository;
+
+    @Autowired
     private AutorService autorService1 = new AutorService();
 
-    public List<Libro> findAPI(String name) {
+    public void findAPI(String name) {
         String API_URL = "http://gutendex.com/books/";
 
 
@@ -58,16 +65,51 @@ public class LibroService {
                                             "languages: "+ resultObject.getJSONArray("languages")+ "\n" +
                                             "download_count: "+ resultObject.getLong("download_count")+ "\n");
 
-                        autorService1.add(resultObject.getJSONArray("authors"));
-                        return Collections.emptyList();
+                        if (!libroRepository.existsByNameIgnoreCase(resultObject.getString("title"))){
+                            Autor autor = autorService1.add(resultObject.getJSONArray("authors"));
+
+                            Libro libro = new Libro();
+                            libro.setTitle(resultObject.getString("title"));
+                            libro.setLanguages(String.valueOf(resultObject.getJSONArray("languages")));
+                            libro.setDownload_count(resultObject.getLong("download_count"));
+                            libro.setAutor(autor);
+
+                            libroRepository.save(libro);
+                            System.out.println("Se registro correctamente el libro y sus autores");
+                            return;
+                        } else {
+                            System.out.println("Este libro ya se encuentra registrado");
+                            return;
+                        }
+
+
                     }
                 }
                 System.out.println("No se encontro ningun libro con tal nombre");
+
             }
         } catch (IOException | InterruptedException e) {
             throw new RuntimeException("Error al procesar la solicitud HTTP", e);
         }
-        return Collections.emptyList(); // Si ocurre algún error, devolver una lista vacía
     }
 
+    public void findAll(){
+
+        List<Libro> libros= libroRepository.findAll();
+        if (!libros.isEmpty()){
+            System.out.println(libros);
+        } else {
+            System.out.println("No ahi libros registrados en la base de datos");
+        }
+
+    }
+
+    public void findByLenguage(String lenguage){
+        List<Libro> libros= libroRepository.findByLenguage(lenguage);
+        if (!libros.isEmpty()){
+            System.out.println(libros);
+        } else {
+            System.out.println("No ahi libros registrados con ese idioma");
+        }
+    }
 }
